@@ -18,6 +18,12 @@
             "id": "gitlab-key",
             "description": "Gitlab API Key",
             "password": true
+        },
+        {
+            "type": "promptString",
+            "id": "github-key",
+            "description": "Github API Key",
+            "password": true
         }
     ],
     "servers": {
@@ -64,6 +70,17 @@
             "env": {
                 "GITLAB_PERSONAL_ACCESS_TOKEN": "${input:gitlab-key}",
                 "GITLAB_API_URL": "https://gitlab.com/api/v4" // Optional, for self-hosted instances
+            }
+        },
+        "github": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-github"
+            ],
+            "env": {
+                "GITHUB_PERSONAL_ACCESS_TOKEN": "${input:github-key}"
             }
         },
         "sequential-thinking": {
