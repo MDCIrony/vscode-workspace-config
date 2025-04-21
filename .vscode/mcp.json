@@ -1,0 +1,78 @@
+{
+    // 💡 Inputs are prompted on first server start, then stored securely by VS Code.
+    "inputs": [
+        {
+            "type": "promptString",
+            "id": "perplexity-key",
+            "description": "Perplexity API Key",
+            "password": true
+        },
+        {
+            "type": "promptString",
+            "id": "path-to-mcp-servers",
+            "description": "Path to mcp servers locally",
+            "password": false
+        },
+        {
+            "type": "promptString",
+            "id": "gitlab-key",
+            "description": "Gitlab API Key",
+            "password": true
+        }
+    ],
+    "servers": {
+      // https://github.com/ppl-ai/modelcontextprotocol/
+        // "Perplexity": {
+        //     "type": "stdio",
+        //     "command": "npx",
+        //     "args": ["-y", "@modelcontextprotocol/server-perplexity-ask"],
+        //     "env": {
+        //         "PERPLEXITY_API_KEY": "${input:perplexity-key}"
+        //     }
+        // },
+        "fetch": {
+            "type": "stdio",
+            "command": "uvx",
+            "args": ["mcp-server-fetch"]
+        },
+        "filesystem": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-filesystem",
+                "/home",
+            ]
+        },
+        "git": {
+            "type": "stdio",
+            "command": "uv",
+            "args": [ 
+                "--directory",
+                "${input:path-to-mcp-servers}/src/git",
+                "run",
+                "mcp-server-git"
+            ],
+        },
+        "gitlab": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-gitlab"
+            ],
+            "env": {
+                "GITLAB_PERSONAL_ACCESS_TOKEN": "${input:gitlab-key}",
+                "GITLAB_API_URL": "https://gitlab.com/api/v4" // Optional, for self-hosted instances
+            }
+        },
+        "sequential-thinking": {
+            "type": "stdio",
+            "command": "npx",
+            "args": [
+                "-y",
+                "@modelcontextprotocol/server-sequential-thinking"
+            ]
+        }
+    }
+}
